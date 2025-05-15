@@ -1,0 +1,27 @@
+<p id="notice"><%= notice %></p>
+<%= @blog.start_time.strftime("%Y-%m-%d") %>の一覧
+<% @blogs.each do |t| %>
+    
+<% unless @blog.start_time.strftime("%Y-%m-%d") == t.start_time.strftime("%Y-%m-%d") %>
+
+<% else %>
+<p>
+<strong>タイトル</strong>
+<%= t.title %>
+</p>
+
+<p>
+<strong>時間</strong>
+<%= t.start_time.strftime("%Y-%m-%d %H:%M") %>
+</p>
+
+<p>
+<strong>内容</strong>
+<%= t.content %>
+</p>
+
+<%= link_to 'Edit', edit_blog_path(t) %> |
+
+<% end %>
+<% end %>
+<%= link_to 'Back', blogs_path %>

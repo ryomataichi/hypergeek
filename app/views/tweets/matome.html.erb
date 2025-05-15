@@ -1,0 +1,40 @@
+<% @tweets.each do |t| %>
+    <% unless @tweet.body ==  t.body %>
+    <% else %>
+    <%= link_to t.body, tweet_path(t.id) %>
+    <%= link_to t.tag_ids, tweet_path(t.id) %>
+    <%= link_to t.user.name, user_path(t.user.id) %>
+    <% if user_signed_in? %>
+    <% if current_user.already_liked?(t) %>
+        <%= link_to tweet_like_path(id: t.id, tweet_id: t.id), data: { turbo_method: :delete } do %>
+            <p>いいねを取り消す</p><%= t.likes.count %>
+        <% end %>
+    <% else %>
+        <%= link_to tweet_likes_path(id: t.id, tweet_id: t.id), data: { turbo_method: :post }  do %>
+            <p>いいね</p><%= t.likes.count %>
+        <% end %>
+    <% end %>
+<% else %>
+    <p>いいねの数 = </p><%= t.likes.count %>
+<% end %>
+    <%= button_to "削除する", tweet_path(t.id), method: :delete %>
+    <div>
+<h2>総合評価：
+<span class="star-rating">
+<span class="star-rating-front" style="width: <%= getPercent(t.overall) %>%;">★★★★★</span>
+<span class="star-rating-back">★★★★★</span>
+</span> 
+</h2>
+</div>
+
+<div>
+<h2>授業レベル：
+<span class="star-rating">
+<span class="star-rating-front" style="width: <%= getPercent(t.level) %>%;">★★★★★</span>
+<span class="star-rating-back">★★★★★</span>
+</span>
+</h2>
+</div>
+<% end %>
+<% end %>
+<%= link_to "Tweet一覧に戻る", tweets_path %>

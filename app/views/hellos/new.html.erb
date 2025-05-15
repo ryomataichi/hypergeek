@@ -1,0 +1,13 @@
+<h1>ハロー投稿</h1>
+<h3>新規ハロー</h3>
+<%= form_for @hello do |f| %>
+    <div class="field">
+    <%= f.label :kazu %>
+    <%= f.text_field :kazu, :size => 140 %>
+    <br>
+    <%= f.label :suuzi %>
+    <%= f.text_field :suuzi, :size => 140 %>
+    </div>
+    <%= f.submit "ハローを投稿する" %>
+<% end %>
+<%= link_to "ハロー一覧に戻る", hellos_path %>

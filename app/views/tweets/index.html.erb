@@ -1,0 +1,78 @@
+<% if user_signed_in? %>
+<%= button_to 'ログアウト', destroy_user_session_path, method: :delete, class: 'log-link' %>
+<%= link_to "マイページへ", user_path(current_user.id) %>
+<% else %>
+<%= link_to "ログイン",  new_user_session_path, class: "log-link" %>
+<%= link_to "新規登録", new_user_registration_path, class: "log-link" %>
+<% end %>
+
+<h1>GeekTwitter</h1>
+<%= form_tag({controller:"tweets",action:"index"}, method: :get) do %>
+    <%= select_tag :tag_search, options_from_collection_for_select(@tag, "id","name") %>
+    <br>
+    <%= submit_tag "検索する" %>
+<% end %>
+<br>
+<%= form_tag({controller:"tweets",action:"index"}, method: :get) do %>
+    <%= text_field_tag :tag %>
+    <%= submit_tag 'タグを追加' %>
+<% end %>
+<br>
+<%= link_to "ハローページへ", hellos_path %>
+<br>
+<% @tweets.each do |t| %>
+    <%= link_to t.body, tweet_path(t.id) %>
+    <%= link_to t.tag_ids, tweet_path(t.id) %>
+    <%= link_to t.user.name, user_path(t.user.id) %>
+    <% if user_signed_in? %>
+        <% if current_user.already_liked?(t) %>
+        <%= link_to tweet_like_path(id: t.id, tweet_id: t.id), data: { turbo_method: :delete } do %>
+            <p>いいねを取り消す</p><%= t.likes.count %>
+        <% end %>
+        <% else %>
+        <%= link_to tweet_likes_path(id: t.id, tweet_id: t.id), data: { turbo_method: :post }  do %>
+            <p>いいね</p><%= t.likes.count %>
+        <% end %>
+        <% end %>
+    <% else %>
+    <p>いいねの数 = </p><%= t.likes.count %>
+    <% end %>
+    <%= button_to "削除する", tweet_path(t.id), method: :delete, class: 'button' %>
+    <div>
+<h2>総合評価：
+<span class="star-rating">
+<span class="star-rating-front" style="width: <%= getPercent(t.overall) %>%;">★★★★★</span>
+<span class="star-rating-back">★★★★★</span>
+</span> 
+</h2>
+</div>
+
+<div>
+<h2>授業レベル：
+<span class="star-rating">
+<span class="star-rating-front" style="width: <%= getPercent(t.level) %>%;">★★★★★</span>
+<span class="star-rating-back">★★★★★</span>
+</span>
+</h2>
+</div>
+<% end %>
+<br><br><br><br>
+<h1>いいねランキング</h1>
+<% @ranking.each do |t| %>
+
+    <%= link_to t.body, tweet_path(t.id) %>
+    <%= link_to t.tag_ids, tweet_path(t.id) %>
+    
+<% end %>
+<h1>総合評価ランキング</h1>
+<ol>
+<% @tweets.order(overall: :desc).each_with_index do |tweet, index| %>
+    <li>
+    <strong>順位 <%= index %>.</strong>
+    <%= tweet.body %> (☆ <%= tweet.overall %>)
+    </li>
+<% end %>
+</ol>
+<br>
+<%= link_to "新規投稿ページへ", new_tweet_path %>
+<%= link_to "ブログページへ", blogs_index_path %>

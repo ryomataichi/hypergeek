@@ -1,0 +1,18 @@
+    <% if current_user.id == @user.id %>
+    近くにいいねできる人がいません
+    <% else %>
+    プロフ画像
+    <%= @user.name %>
+    <%= @user.profile %>
+        <% if @isRoom == true %>
+            <p><%= link_to 'DMへ', room_path(@roomId) %></p>
+        <% else %>
+        <%= form_for @room do |f| %>
+            <%= fields_for @entry do |e|%>
+            <% e.hidden_field :user_id, value: @user.id %>
+        <% end %>
+        <%= f.submit "メッセージを送る"%>
+        <% end %>
+    <% end %>
+<% end %>
+<%= link_to "Tweet一覧に戻る", tweets_path %>
